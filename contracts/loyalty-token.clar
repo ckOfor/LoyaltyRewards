@@ -54,3 +54,17 @@
       (map-delete staked-balances tx-sender)
       (map-delete staking-start-time tx-sender)
       (ft-mint? loyalty-token (+ staked-amount bonus-amount) tx-sender))))
+
+;; Read-only functions
+
+;; Check if an address is a registered business
+(define-read-only (is-business (address principal))
+  (default-to false (map-get? businesses address)))
+
+;; Get the staked balance of an address
+(define-read-only (get-staked-balance (address principal))
+  (default-to u0 (map-get? staked-balances address)))
+
+;; Get the staking start time of an address
+(define-read-only (get-staking-start-time (address principal))
+  (default-to u0 (map-get? staking-start-time address)))
