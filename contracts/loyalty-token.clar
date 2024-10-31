@@ -19,3 +19,9 @@
   (begin
     (asserts! (is-eq tx-sender contract-owner) err-owner-only)
     (ok (map-set businesses business true))))
+
+;; Mint and distribute tokens to a user
+(define-public (mint-and-distribute (recipient principal) (amount uint))
+  (begin
+    (asserts! (is-business tx-sender) err-not-authorized)
+    (ft-mint? loyalty-token amount recipient)))
