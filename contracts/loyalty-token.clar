@@ -25,3 +25,9 @@
   (begin
     (asserts! (is-business tx-sender) err-not-authorized)
     (ft-mint? loyalty-token amount recipient)))
+
+;; Redeem tokens for a reward
+(define-public (redeem-tokens (amount uint))
+  (begin
+    (asserts! (>= (stx-get-balance tx-sender) amount) err-insufficient-balance)
+    (ft-burn? loyalty-token amount tx-sender)))
