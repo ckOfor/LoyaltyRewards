@@ -40,3 +40,17 @@
       (map-set staked-balances tx-sender (+ current-stake amount))
       (map-set staking-start-time tx-sender block-height)
       (ft-burn? loyalty-token amount tx-sender))))
+
+;; Unstake tokens and claim bonus
+(define-public (unstake-tokens)
+  (let (
+    (staked-amount (default-to u0 (map-get? staked-balances tx-sender)))
+    (start-time (default-to u0 (map-get? staking-start-time tx-sender)))
+    (staking-period (- block-height start-time))
+    (bonus-rate u1) ;; 1% bonus per 100 blocks, adjust as needed
+    (bonus-amount (/ (* staked-amount staking-period bonus-rate) u10000))
+  )
+    (begin
+      (map-delete staked-balances tx-sender)
+      (map-delete staking-start-time tx-sender)
+      (ft-mint? loyalty-token (+ staked-amount bonus-amount) tx-sender))))
