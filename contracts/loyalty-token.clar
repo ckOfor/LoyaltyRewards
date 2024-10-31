@@ -31,3 +31,12 @@
   (begin
     (asserts! (>= (stx-get-balance tx-sender) amount) err-insufficient-balance)
     (ft-burn? loyalty-token amount tx-sender)))
+
+;; Stake tokens for bonus rewards
+(define-public (stake-tokens (amount uint))
+  (let ((current-stake (default-to u0 (map-get? staked-balances tx-sender))))
+    (begin
+      (asserts! (>= (stx-get-balance tx-sender) amount) err-insufficient-balance)
+      (map-set staked-balances tx-sender (+ current-stake amount))
+      (map-set staking-start-time tx-sender block-height)
+      (ft-burn? loyalty-token amount tx-sender))))
